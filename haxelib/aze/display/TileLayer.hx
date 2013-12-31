@@ -11,6 +11,8 @@ import flash.geom.Matrix;
 import flash.geom.Rectangle;
 import flash.Lib;
 
+import openfl.display.Shader;
+
 /**
  * A little wrapper of NME's Tilesheet rendering (for native platform)
  * and using Bitmaps for Flash platform.
@@ -48,7 +50,7 @@ class TileLayer extends TileGroup
 		drawList = new DrawList();
 	}
 
-	public function render(?elapsed:Int)
+	public function render(?elapsed:Int, ?clear:Bool)
 	{
 		drawList.begin(elapsed == null ? 0 : elapsed, useTransforms, useAlpha, useTint, useAdditive);
 		renderGroup(this, 0, 0, 0);
@@ -56,7 +58,8 @@ class TileLayer extends TileGroup
 		#if flash
 		view.addChild(container);
 		#else
-		view.graphics.clear();
+		if (clear == null || clear)
+			view.graphics.clear();
 		tilesheet.drawTiles(view.graphics, drawList.list, useSmoothing, drawList.flags);
 		#end
 		return drawList.elapsed;
